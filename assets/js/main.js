@@ -41,8 +41,11 @@ const showOrders=e=>{
     let konacanDatum=datum.toJSON(resultOrder.orderDate);
     console.log(konacanDatum.slice(0,10))
 
-    ordersDiv.innerHTML=`<div class="thumbnail col-md-12 box"> 
-    <p>OrderID ${resultOrder.id}</p> <br> <br>
+    ordersDiv.innerHTML=`<div class="col-sm-12 center-block" id="${resultOrder.id}">
+    <div class="thumbnail col-md-12 box>
+    <p style="font-size:20px">
+    OrderID ${resultOrder.id} <br> <hr>
+    </p> 
       ${resultOrderDetails.map(x=>{
           suma+=x.quantity*x.unitPrice*(1-x.discount);
           ukupnaSuma+=suma;
@@ -61,7 +64,7 @@ const showOrders=e=>{
           </p>
           <hr>
           <p>
-          Suma: ${suma.toFixed(2)}
+          Kolicina: ${suma.toFixed(2)} <hr>
           </p>
           <hr>
           `
