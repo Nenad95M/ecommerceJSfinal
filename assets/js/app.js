@@ -47,4 +47,113 @@ class UI{
      });
      productsDOM.innerHTML=result;
     }
+    getBagButtons(){
+        const buttons=[...document.querySelectorAll(".bag-btn")];
+
+        buttonsDOM=buttons;
+        buttons.forEach(button=>{
+            let id=button.dataset.id;
+            let inCart=cart.find(item=>idem.id===id);
+            if(inCart){
+                button.innerText="In cart";
+                button.disabled=true;
+            }
+            else{
+                button.addEventListener("click",event=>{
+                    event.target.innerHTML="In cart";
+                    event.target.disabled=true;
+
+                    let cartItem={...Storage.getProduct(id), amount: 1};
+                    cart=[...cart, cartItem];
+                    Storage.saveCart(cart);
+                    this.setCartValues(cart);
+                    this.addCartItem(cartItem);
+                    this.showCart();
+                })
+            }
+        })
+    }
+
+    setCartValues(cart){
+        let tempTotal=0;
+        let itemsTotal=0;
+        cart.map(item=>{
+            tempTotal+=item.product_price*item.amount;
+            itemsTotal+=item.amount;
+        })
+        cartTotal.innerText=parseFloat(tempTotal).toFixed(2);
+        cartItem.innerText=itemsTotal;
+    }
+    addCartItem(item){
+        const div=document.createElement('div');
+        div.classList.add('card-item');
+        div.innerHTML=`
+        <img src=${item.product_image} alt="product">
+        <div>
+        <h4>${item.product_name}</h4>
+        <h5>${item.product_price}</h5>
+        <span class="remove-item" data-id=${item.product_id}>Remove from cart</span>
+        </div>
+        <div>
+        <i class="fas fa-chevron-up" data-id=${item.product_id}></i>
+        <p class="item-amount">${item.amount}</p>
+        <i class="fas fa-chevron-down" data-id=${item.product_id}></i>
+        </div>
+        `;
+        cartContent.appendChild(div);
+    }
+    showCart(){
+        cartOverlay.classList.add('transparentBcg');
+        cartDOM.classList.add('showCart');
+    }
+    setupAPP(){
+        cart=Storage.getCart();
+        this.setCartValues(cart);
+        this.populateCart(cart);
+        cartBtn.addEventListener('click', this.showCart)
+        closeCartBtn.addEventListener('click', this.hideCart)
+    }
+    populateCart(cart){
+        cart.forEach(item=>this.addCartItem(item));
+    }
+    hideCart(){
+        cartOverlay.classList.remove('transparentBcg');
+        cartDOM.classList.remove('showCart');
+    }
+    cartLogic(){
+       clearCartBtn.addEventListener('click',()=>{
+           this.clearCart();
+       });
+       cartContent.addEventListener('click', event=>{
+           if(event.target.classList.contains('remove-item')){
+              let removeItem=event.target;
+              let id=removeItem.dataset.id;
+              cartContent.removeChild(removeItem.parentElement.parentElement);
+              this.removeItem(id);
+           }
+            else if(event.target.classList.contains('fa-chevron-up')){
+               let addAmount=event.target;
+               let id=addAmount.dataset.id;
+               let tempItem=cart.find(item=>item.product_id.toString()===id);
+               tempItem.amount=tempItem.amount+1;
+               Storage.saveCart(cart);
+               this.setCartValues(cart);
+               addAmount.nextElementSibling.innerText=tempItem.amount;
+        }
+        else if(event.target.classList.contains('fa-chevron-down')){
+            let lowerAmount=event.target;
+            let id=lowerAmount.dataset.id;
+            let tempItem=cart.find(item=>item.product_id.toString()===id);
+            tempItem.amount=tempItem.amount-1;
+            if(tempItem.amount>0){
+              Storage.saveCart(cart);
+              lowerAmount.previusElementSibling.innerText=tempItem.amount;
+            }else{
+             cartContent.removeChild(lowerAmount.parentElement.parentElement);
+             this.removeItem(id);
+            }
+        }
+      
+       })
+    }
 }
