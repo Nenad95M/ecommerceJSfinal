@@ -4,7 +4,7 @@ let orderUrl="https://extendsclass.com/api/json-storage/bin/addcdbf";
 //odgovor na obecanje
 const response=await fetch(orderUrl);
 //pretvorimo response u objekat iz json-a
-const data=await response.json()
+const data=await response.json();
 //napravimo niz narudzbina
 const arrayOfOrders=data.Results;
 //uzimamo vrednost kljuca sesije
@@ -25,7 +25,8 @@ window.onload=function(){
 const showOrders=e=>{
     let resultOrder=e.order;
     let resultOrderDetails=e.orderDetails;
-    let suma, ukupnaSuma=0;
+    let suma=0; 
+    let ukupnaSuma=0;
 
     const ordersDiv=document.getElementById('orders');
 
