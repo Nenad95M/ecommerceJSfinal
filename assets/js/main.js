@@ -29,7 +29,7 @@ const showOrders=e=>{
     let ukupnaSuma=0;
 
     const ordersDiv=document.getElementById('orders');
-
+    
     //pretvaramo datum u format citljiv coveku
     const parseJsonDate=jsonString=>{
         return new Date(parseInt(jsonString.replace('/Date(','')))
@@ -40,4 +40,55 @@ const showOrders=e=>{
        //menjamo malo format zapisa da se prikazuje samo godina
     let konacanDatum=datum.toJSON(resultOrder.orderDate);
     console.log(konacanDatum.slice(0,10))
+
+    ordersDiv.innerHTML=`<div class="thumbnail col-md-12 box"> 
+    <p>OrderID ${resultOrder.id}</p> <br> <br>
+      ${resultOrderDetails.map(x=>{
+          suma+=x.quantity*x.unitPrice*(1-x.discount);
+          ukupnaSuma+=suma;
+          return `
+          <p>
+          ProductId: ${x.product}
+          </p>
+          <p>
+          Quantity: ${x.quantity}
+          </p>
+          <p>
+          Unit price: ${x.unitPrice}
+          </p>
+          <p>
+          Konacan datum ${konacanDatum.slice(0,10)}
+          </p>
+          <hr>
+          <p>
+          Suma: ${suma.toFixed(2)}
+          </p>
+          <hr>
+          `
+      }).join('')}    
+    <p>Ukupna suma: ${ukupnaSuma.toFixed(2)}<br><p>
+    </div> </div> `;
 }
+const username=sessionStorage.getItem("keyUsername");
+
+$("#logout").text(username);
+
+$("#logout").on({
+    mouseover:function(){
+       $(this).text('Logout')
+        $(this).css({
+            "background":"gray",
+            "color":"white",
+            "border-radius":"10px"
+        })
+    },
+    mouseot:()=>{
+        $(this).text(username)
+    },
+    click: ()=>{
+        sessionStorage.removeItem("keyUsername");
+        sessionStorage.removeItem('keyPassword');
+        location.href="login.html";
+        
+    }
+})
