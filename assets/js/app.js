@@ -156,4 +156,44 @@ class UI{
       
        })
     }
+    clearCart(){
+        let cartItems=cart.map(item=>item.product_id.toString());
+        cartItems.forEach(id=>this.removeItem(id));
+        console.log(cartContent.children);
+
+        while(cartContent.children.length>0){
+            cartContent.removeChild(cartContent.children[0])
+        }
+        this.hideCart();
+
+    
+    }
+    removeItem(id){
+        cart=cart.filter(item=>item.product_id.toString()!==id);
+       this.setCartValues(cart);
+       Storage.saveCart(cart);
+       let button=this.getSingleButton(id);
+       button.disabled=false;
+       button.innerHTML=`<i class="fas fa-shopping-cart"></i> add to cart`;
+    }
+    getSingleButton(id){
+        return buttonsDOM.find(button=>button.dataset.id===id);
+    }
+    
+}
+
+class Storage{
+    static saveCart(products){
+        localStorage.setItem("products", JSON.stringify(products));
+    }
+    static getProduct(id){
+        let products=JSON.parse(localStorage.getItem('products'));
+        return products.find(product=>product.product_id.toString()===id);
+    }
+    static saveCart(cart){
+        localStorage.setItem('cart', JSON.stringify(cart));
+    }
+    static getCart(){
+        return localStorage.getItem('cart')?JSON.parse(localStorage.getItem('cart')):[];
+    }
 }
