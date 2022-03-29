@@ -7,7 +7,8 @@ const cartItems=document.querySelector('cart-items');
 const cartTotal=document.querySelector('cart-total');
 const cartContent=document.querySelector('cart-content');
 const productsDOM=document.querySelector('products-center');
-
+let cart=[];
+let buttonsDOM=[];
 //korpa
 class Products{
     async getProducts(){
@@ -197,3 +198,43 @@ class Storage{
         return localStorage.getItem('cart')?JSON.parse(localStorage.getItem('cart')):[];
     }
 }
+document.addEventListener("DOMContentLoaded", ()=>{
+    const ui=new UI();
+    const products=new Products();
+
+    //podesavanje aplikacije
+    ui.setupAPP();
+
+    //uzima sve proizvode
+    products.getProducts().then(products=>{
+        ui.displayProducts(products);
+        Storage.saveProducts(products);
+    }).then(()=>{
+        ui.getBagButtons();
+        ui.cartLogic();
+    });
+    $("#logout").text(username);
+
+})
+
+const username=sessionStorage.getItem("keyUsername");
+
+$("#logout").on({
+    mouseover:function(){
+       $(this).text('Logout')
+        $(this).css({
+            "background":"gray",
+            "color":"white",
+            "border-radius":"10px"
+        })
+    },
+    mouseot:()=>{
+        $(this).text(username)
+    },
+    click: ()=>{
+        sessionStorage.removeItem("keyUsername");
+        sessionStorage.removeItem('keyPassword');
+        location.href="login.html";
+        
+    }
+})
