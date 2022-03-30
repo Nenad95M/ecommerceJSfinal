@@ -1,12 +1,12 @@
 const cartBtn=document.querySelector('.cart-btn');
 const closeCartBtn=document.querySelector('.close-cart');
-const clearCartBtn=document.querySelector('close-cart');
-const cartDOM=document.querySelector('cart');
-const cartOverlay=document.querySelector('cart-overlay');
-const cartItems=document.querySelector('cart-items');
-const cartTotal=document.querySelector('cart-total');
-const cartContent=document.querySelector('cart-content');
-const productsDOM=document.querySelector('products-center');
+const clearCartBtn=document.querySelector('.clear-cart');
+const cartDOM=document.querySelector('.cart');
+const cartOverlay=document.querySelector('.cart-overlay');
+const cartItem=document.querySelector('.cart-items');
+const cartTotal=document.querySelector('.cart-total');
+const cartContent=document.querySelector('.cart-content');
+const productsDOM=document.querySelector('.products-center');
 let cart=[];
 let buttonsDOM=[];
 //korpa
@@ -14,6 +14,7 @@ class Products{
     async getProducts(){
         try{
            let result=await fetch('assets/Products.json');
+           let data=await result.json();
            let products=data.items;
           products=products.map(item=>{
               const {product_name, product_price, product_id, product_image}=item;
@@ -54,7 +55,7 @@ class UI{
         buttonsDOM=buttons;
         buttons.forEach(button=>{
             let id=button.dataset.id;
-            let inCart=cart.find(item=>idem.id===id);
+            let inCart=cart.find(item=>item.id===id);
             if(inCart){
                 button.innerText="In cart";
                 button.disabled=true;
@@ -184,7 +185,7 @@ class UI{
 }
 
 class Storage{
-    static saveCart(products){
+    static saveProducts(products){
         localStorage.setItem("products", JSON.stringify(products));
     }
     static getProduct(id){
